@@ -4,6 +4,7 @@ import {dataActions, useData} from "../../../contexts/data.context";
 import Button from "../../common/Button";
 import {useMemo, useState} from "react";
 import Select from "../../common/Select";
+import {useAuth} from "../../../contexts/auth.context";
 
 export default function CardDetailsModal() {
 
@@ -52,6 +53,7 @@ export default function CardDetailsModal() {
 
 
 function CardMembers({card, onRemove, onAdd}) {
+  const {user} = useAuth()
   const [newMember, setNewMember] = useState("")
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -64,7 +66,8 @@ function CardMembers({card, onRemove, onAdd}) {
         {(card.members || []).map((member, key) =>
             <div className="member mb1" key={key}>
               {member}
-              <Button onClick={e => onRemove?.(member)} content={"x"}/>
+              {member !== user.username &&
+              <Button onClick={e => onRemove?.(member)} content={"x"}/>}
             </div>)}
 
         <form onSubmit={handleSubmit}>
