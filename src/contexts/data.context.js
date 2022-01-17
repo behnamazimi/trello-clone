@@ -15,6 +15,7 @@ export const dataActions = {
   addCard: "addCard",
   updateCard: "updateCard",
   setActiveCard: "setActiveCard",
+  removeCard: "removeCard",
 }
 
 const DataContext = React.createContext({})
@@ -158,21 +159,28 @@ function dataReducer(state, action) {
         ...state,
         cards: state.cards.map(card => {
           if (card.key === action.payload.key) {
-            card = {...action.payload, updatedAt: now,}
+            card = {...action.payload, updatedAt: now}
           }
           return card
         }),
-        activeCard: action.payload
+        activeCard: {...action.payload, updatedAt: now}
       }
       break;
     }
-    case dataActions.setActiveCard: {
+    case dataActions.setActiveCard:
       state = {
         ...state,
         activeCard: state.cards.find(c => c.key === action.payload)
       }
       break;
-    }
+    case dataActions.removeCard:
+      state = {
+        ...state,
+        activeCard: null,
+        cards: state.cards.filter(c => c.key !== action.payload)
+      }
+      break;
+
   }
 
   localStorage.setItem(localDataKey, JSON.stringify(state))

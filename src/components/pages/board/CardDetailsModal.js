@@ -5,6 +5,7 @@ import Button from "../../common/Button";
 import {useMemo, useState} from "react";
 import Select from "../../common/Select";
 import {useAuth} from "../../../contexts/auth.context";
+import parseDateTimestamp from "../../../utils/parseDateTimestamp";
 
 export default function CardDetailsModal() {
 
@@ -24,12 +25,31 @@ export default function CardDetailsModal() {
     })
   }
 
+  const handleCardRemove = () => {
+    dispatch({
+      type: dataActions.removeCard,
+      payload: targetCard?.key
+    })
+  }
+
+
+  const handleCardMove = (boardKey, columnKey) => {
+    handleCardChange("board", boardKey)
+    handleCardChange("column", columnKey)
+  }
+
   const targetCard = state.activeCard
   if (!targetCard) return null
-
+  console.log(targetCard.updatedAt);
   return (
-      <Modal open={true} className="CardDetailsModal p2" title={"Card Details"}
+      <Modal open={true} className="CardDetailsModal p2"
+             title={`Card: ${targetCard.key}`}
              onClose={handleClose}>
+        <div className="meta mb1">
+          <small className="block">Created at: {parseDateTimestamp(targetCard.createdAt)}</small>
+          {targetCard.updatedAt &&
+          <small className="block">Updated at: {parseDateTimestamp(targetCard.updatedAt)}</small>}
+        </div>
         <div className="border-bottom pb1">
           <Input placeholder={"Title"} value={targetCard.title || ""}
                  onChange={(e) => handleCardChange("title", e.target.value)}
@@ -47,6 +67,10 @@ export default function CardDetailsModal() {
                     onAdd={(newLbl) => handleCardChange("labels", [...targetCard.labels, newLbl])}
                     onRemove={(lbl) => handleCardChange("labels", targetCard.labels.filter(m => m !== lbl))}/>
 
+        <MoveCard card={targetCard} onMove={handleCardMove}/>
+
+        <Button onClick={handleCardRemove} content={"Remove This Card"}
+                className={"col-12"}/>
       </Modal>
   )
 }
@@ -106,6 +130,44 @@ function CardLabels({card, onRemove, onAdd}) {
                   onChange={e => setLabel(e.target.value)}
                   options={state.labels}/>
           <Button content="Add"/>
+        </form>
+      </div>
+  )
+}
+
+function MoveCard({card, onMove}) {
+  const {state, getBoardByKey} = useData()
+
+  const [selectedBoard, setSelectedBoard] = useState(card?.board)
+  const [selectedColumn, setSelectedColumn] = useState(card?.column)
+
+  const boardColumns = useMemo(() => getBoardByKey(selectedBoard)?.columns || [], [selectedBoard, getBoardByKey])
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (!selectedColumn || !selectedBoard) return
+
+    onMove?.(selectedBoard, selectedColumn)
+  }
+
+  return (
+      <div className="MoveCard border-bottom my1">
+
+        <label>Move Card</label>
+        <form onSubmit={handleSubmit} className="flex">
+          <Select className="flex items-center"
+                  label={"Board: "}
+                  options={state.boards}
+                  value={selectedBoard}
+                  onChange={e => setSelectedBoard(e.target.value)}
+                  required/>
+          <Select className="flex items-center"
+                  label={"Column: "}
+                  options={boardColumns}
+                  value={selectedColumn}
+                  onChange={e => setSelectedColumn(e.target.value)}
+                  required/>
+          <Button>Move</Button>
         </form>
       </div>
   )

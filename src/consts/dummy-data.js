@@ -47,6 +47,7 @@ const dummyData = {
       content: "This is my first task",
       board: "daily",
       column: "todo",
+      createdAt: 1642449856782,
       checklist: [
         {
           title: "Do it 1",
