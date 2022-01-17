@@ -60,3 +60,20 @@ button {
     max-width: 100%;
     border: 1px solid #1c2631;
 }
+
+.ColumnsWrapper {
+    display: flex;
+    overflow: hidden;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    align-items: flex-start;
+}
+
+.Column {
+    background-color: rgba(255, 255, 255, 0.1);
+    min-width: 240px;
+    min-height: 50px;
+    max-height: 70vh;
+    padding: 1rem;
+    margin-right: 1.5rem;
+}

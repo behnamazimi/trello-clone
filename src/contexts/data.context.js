@@ -10,6 +10,7 @@ export const dataActions = {
   removeWorkspace: "removeWorkspace",
   addBoard: "addBoard",
   removeBoard: "removeBoard",
+  removeColumn: "removeColumn",
 }
 
 const DataContext = React.createContext({})
@@ -35,10 +36,29 @@ export default function DataProvider({children}) {
     return targetWorkspace
   }, [state, getBoards])
 
+  const getCardsOfColumn = useCallback((boardKey, columnKey) => {
+    return state.cards.filter(c => c.board === boardKey && c.column === columnKey)
+  }, [state])
+
+  const getBoardByKey = useCallback(boardKey => {
+    const targetBoard = state.boards.find(b => b.key === boardKey)
+    if (!targetBoard) {
+      return null
+    }
+    targetBoard.columns = (targetBoard.columns || [])
+        .sort((a, b) => a.order - b.order)
+        .map(c => {
+          c.cards = getCardsOfColumn(boardKey, c.key)
+          return c
+        })
+    return targetBoard
+  }, [state, getBoards, getCardsOfColumn])
+
   const value = useMemo(() => ({
     state,
     dispatch,
     getWorkspaceByKey,
+    getBoardByKey,
   }), [state, dispatch, getWorkspaceByKey])
 
   return (
@@ -85,6 +105,17 @@ function dataReducer(state, action) {
       state = {
         ...state,
         boards: [...state.boards, newItem]
+      }
+      break;
+    }
+    case dataActions.removeColumn: {
+      state = {
+        ...state,
+        boards: state.boards.map(b => {
+          if (b.key === action.payload.boardKey)
+            b.columns = (b.columns || []).filter(c => c.key !== action.payload.columnKey)
+          return b
+        })
       }
       break;
     }
