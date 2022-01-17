@@ -8,29 +8,36 @@ export function useRouter() {
 
 export default function RouterProvider({children}) {
 
-  const [currentPage, setCurrentPage] = useState("")
+  const [location, setLocation] = useState({
+    pathname: getCurrentPathname(),
+    path: "/",
+    params: null
+  })
+
+  const assignCurrentPathname = useCallback(() => {
+    let cp = getCurrentPathname()
+    // todo: get params
+    setLocation({pathname: cp, path: cp, params: null})
+  }, [])
 
   useEffect(() => {
-    const handler = () => {
-      const path = window.location.pathname.toLowerCase()
-
-      setCurrentPage(path)
-    }
-    window.addEventListener("popstate", handler)
+    window.addEventListener("popstate", assignCurrentPathname)
     return () => {
-      window.removeEventListener("popstate", handler)
+      window.removeEventListener("popstate", assignCurrentPathname)
     }
-  }, [setCurrentPage])
+  }, [assignCurrentPathname])
 
   const navigate = useCallback((toPath) => {
-    setCurrentPage(toPath)
+    setLocation({pathname: toPath, path: toPath})
+    // todo: find the route
+
     window.history.pushState(null, null, toPath)
-  }, [setCurrentPage])
+  }, [setLocation])
 
   const value = useMemo(() => ({
-    currentPage,
+    location,
     navigate
-  }), [currentPage, navigate])
+  }), [location, navigate])
 
   return (
       <RouterContext.Provider value={value}>
@@ -40,9 +47,13 @@ export default function RouterProvider({children}) {
 }
 
 export function Route({path, Component, ...rest}) {
-  const router = useRouter()
-  if (router.currentPage !== path) {
+  const {location} = useRouter()
+  if (location?.pathname !== path) {
     return null
   }
   return <Component/>
+}
+
+function getCurrentPathname() {
+  return window.location.pathname.toLowerCase()
 }
