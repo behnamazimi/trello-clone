@@ -30,6 +30,7 @@ export default function Login() {
       <div>
         <h1 className="center">Login</h1>
         <form onSubmit={handleSubmit} className={"flex flex-column items-center"}>
+          <p>username: behnam, password: 123</p>
           <Input name={"username"} label={"Username"}
                  value={credentials.username}
                  required

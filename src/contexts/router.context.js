@@ -1,5 +1,6 @@
 import React, {Component, useCallback, useContext, useEffect, useMemo, useState} from "react";
 import routes from "../consts/routes";
+import RouteComponent from "../components/common/RouteComponent";
 
 const RouterContext = React.createContext({})
 
@@ -53,13 +54,13 @@ export default function RouterProvider({children}) {
   )
 }
 
-export function Route({path, Component, ...rest}) {
+export function Route(props) {
   const {location} = useRouter()
-  const [isMatched] = checkMatchedAndGetParams(path, location.pathname)
+  const [isMatched] = checkMatchedAndGetParams(props.path, location.pathname)
   if (!isMatched) {
     return null
   }
-  return <Component {...rest}/>
+  return <RouteComponent {...props}/>
 }
 
 export function Link({children, to, href = null, ...rest}) {

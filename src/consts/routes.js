@@ -1,34 +1,29 @@
-import Login from "../components/pages/Login";
-import Profile from "../components/pages/Profile";
-import Board from "../components/pages/Board";
-import Workspaces from "../components/pages/workspaces/Workspaces";
-import WorkspaceDetails from "../components/pages/workspaces/WorkspaceDetails";
-
 const routes = [
   {
     title: "Login",
     path: "/login",
-    Component: Login
+    component: "components/pages/Login",
+    isPrivate: false
   },
   {
     title: "Profile",
     path: "/profile",
-    Component: Profile
+    component: "components/pages/Profile",
   },
   {
     title: "Workspaces",
     path: "/",
-    Component: Workspaces
+    component: "components/pages/workspaces/Workspaces",
   },
   {
     title: "WorkspaceDetails",
     path: "/w/:key",
-    Component: WorkspaceDetails
+    component: "components/pages/workspaces/WorkspaceDetails",
   },
   {
     title: "Board",
     path: "/b/:key",
-    Component: Board
+    component: "components/pages/Board",
   },
 ]
 

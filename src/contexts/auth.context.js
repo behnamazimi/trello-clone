@@ -1,5 +1,7 @@
-import React, {useCallback, useContext, useMemo, useState} from "react";
+import React, {useCallback, useContext, useLayoutEffect, useMemo, useState} from "react";
 import {useData} from "./data.context";
+import isJsonString from "../utils/isJsonString";
+import {useRouter} from "./router.context";
 
 const localAuthKey = "user"
 
@@ -13,6 +15,18 @@ export default function AuthProvider({children}) {
 
   const [user, setUser] = useState()
   const {state} = useData()
+  const {location, navigate} = useRouter()
+
+  // check if logged in already
+  useLayoutEffect(() => {
+    if (!!user) return
+
+    const localAuth = localStorage.getItem(localAuthKey)
+    if (isJsonString(localAuth)) {
+      setUser(JSON.parse(localAuth))
+      navigate(location.pathname)
+    }
+  }, [])
 
   const updateAuth = useCallback((user) => {
     localStorage.setItem(localAuthKey, JSON.stringify(user))
