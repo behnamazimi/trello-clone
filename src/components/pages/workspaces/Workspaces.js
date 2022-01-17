@@ -2,6 +2,7 @@ import Button from "../../common/Button";
 import {dataActions, useData} from "../../../contexts/data.context";
 import {useRouter} from "../../../contexts/router.context";
 import {useCallback} from "react";
+import Modal from "../../common/Modal";
 
 export default function Workspaces() {
   const {state, dispatch} = useData()
@@ -34,6 +35,10 @@ export default function Workspaces() {
           {(!state.workspaces || !state.workspaces.length) &&
           <p>No Workspaces. Add new one</p>}
         </div>
+
+        <Modal title={"test"} open={true}>
+          <h1>testing</h1>
+        </Modal>
       </div>
   )
 }
