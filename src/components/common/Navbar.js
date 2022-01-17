@@ -1,10 +1,9 @@
 import {Link} from "../../contexts/router.context";
-import {useData} from "../../contexts/data.context";
+import {useAuth} from "../../contexts/auth.context";
 
 export default function Navbar(props) {
 
-  const {state} = useData()
-  console.log(state);
+  const {authorized, user} = useAuth()
 
   return (
       <header {...props} className="p1 flex justify-between">
@@ -15,7 +14,9 @@ export default function Navbar(props) {
         </nav>
 
         <div>
-          <Link to={"/profile"}>Username</Link>
+          {authorized
+              ? <Link to={"/profile"}>{user.fullName}</Link>
+              : <Link to={"/login"}>Login</Link>}
         </div>
       </header>
   )
