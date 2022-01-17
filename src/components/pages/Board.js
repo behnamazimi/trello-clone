@@ -2,6 +2,9 @@ import {useRouter} from "../../contexts/router.context";
 import Button from "../common/Button";
 import {dataActions, useData} from "../../contexts/data.context";
 import {useCallback, useMemo, useState} from "react";
+import {useAuth} from "../../contexts/auth.context";
+import Modal from "../common/Modal";
+import Input from "../common/Input";
 
 export default function Board() {
   const {navigate, location} = useRouter()
@@ -15,6 +18,13 @@ export default function Board() {
     dispatch({
       type: dataActions.removeColumn,
       payload: {boardKey, columnKey}
+    })
+  }, [dispatch])
+
+  const handleColumnAdd = useCallback((payload) => {
+    dispatch({
+      type: dataActions.addColumn,
+      payload
     })
   }, [dispatch])
 
@@ -35,6 +45,11 @@ export default function Board() {
           <p>No Columns. Add new one</p>}
 
         </div>
+
+        <NewColumnModal open={newColumnModal}
+                        onClose={() => setNewColumnModal(false)}
+                        onConfirm={handleColumnAdd}
+                        boardKey={targetBoard?.key}/>
       </div>
   )
 }
@@ -52,5 +67,42 @@ function Column({column, boardKey, onRemove}) {
           {column.cards.map(c => <h4 key={c.key}>Card</h4>)}
         </div>
       </div>
+  )
+}
+
+function NewColumnModal({open, onClose, onConfirm, boardKey}) {
+  const {user} = useAuth()
+
+  const [column, setColumn] = useState({
+    title: "",
+    order: 1
+  })
+
+  const handleFormChange = useCallback(e => {
+    setColumn(s => ({...s, [e.target.name]: e.target.value}))
+  }, [])
+
+  const handleSubmit = useCallback((e) => {
+    e.preventDefault()
+    onConfirm?.({...column, username: user.username, boardKey})
+    onClose?.()
+  }, [onConfirm, column, user, boardKey])
+
+  return (
+      <Modal open={open} onClose={onClose} title={`New Column`}>
+        <form onSubmit={handleSubmit} onChange={handleFormChange}>
+          <div>
+            <Input label={"Title"} name={"title"} required autoFocus/>
+            <Input label={"Order"} name={"order"} required type="number"/>
+          </div>
+          <div className="flex justify-end t2">
+            <Button onClick={onClose}
+                    content={"Cancel"}
+                    className={"mr1"}
+                    type="button"/>
+            <Button content={"Confirm"}/>
+          </div>
+        </form>
+      </Modal>
   )
 }

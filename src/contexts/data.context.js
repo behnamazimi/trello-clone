@@ -11,6 +11,7 @@ export const dataActions = {
   addBoard: "addBoard",
   removeBoard: "removeBoard",
   removeColumn: "removeColumn",
+  addColumn: "addColumn",
 }
 
 const DataContext = React.createContext({})
@@ -108,12 +109,28 @@ function dataReducer(state, action) {
       }
       break;
     }
-    case dataActions.removeColumn: {
+    case dataActions.removeColumn:
       state = {
         ...state,
         boards: state.boards.map(b => {
           if (b.key === action.payload.boardKey)
             b.columns = (b.columns || []).filter(c => c.key !== action.payload.columnKey)
+          return b
+        })
+      }
+      break;
+    case dataActions.addColumn: {
+      const newItem = {
+        key: generateKeyByTitle(action.payload.title),
+        ...action.payload,
+        createdAt: now
+      }
+      state = {
+        ...state,
+        boards: state.boards.map(b => {
+          if (b.key === action.payload.boardKey) {
+            b.columns.push(newItem)
+          }
           return b
         })
       }
