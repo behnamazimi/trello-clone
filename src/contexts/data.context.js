@@ -1,5 +1,10 @@
-import React, {useContext, useMemo, useReducer, useState} from "react";
+import React, {useContext, useMemo, useReducer} from "react";
 import dummyData from "../consts/dummy-data";
+
+export const dataActions = {
+  addWorkspace: "addWorkspace",
+  removeWorkspace: "removeWorkspace",
+}
 
 const DataContext = React.createContext({})
 
@@ -24,5 +29,14 @@ export default function DataProvider({children}) {
 }
 
 function dataReducer(state, action) {
+
+  switch (action.type) {
+    case dataActions.removeWorkspace:
+      state = {
+        ...state,
+        workspaces: state.workspaces.filter(w => w.key !== action.payload)
+      }
+      break
+  }
   return state
 }

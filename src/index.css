@@ -21,3 +21,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+button {
+  margin: 0;
+}
+
+.WorkspaceItem:hover {
+  background-color: rgba(255, 255, 255, .1);
+}
