@@ -7,12 +7,25 @@ import Modal from "../common/Modal";
 import Input from "../common/Input";
 
 export default function Board() {
+  const {user} = useAuth()
   const {navigate, location} = useRouter()
   const {state, dispatch, getBoardByKey} = useData()
   const [newColumnModal, setNewColumnModal] = useState()
 
   const targetBoard = useMemo(() => getBoardByKey(location.params?.key), [state, getBoardByKey, location.params])
 
+
+  const handleCardAdding = useCallback((payload) => {
+    dispatch({
+      type: dataActions.addCard,
+      payload: {
+        ...payload,
+        content: "",
+        members: [user.username],
+        labels: []
+      }
+    })
+  }, [dispatch])
 
   const handleColumnRemove = useCallback((boardKey, columnKey) => {
     dispatch({
@@ -39,7 +52,8 @@ export default function Board() {
           {(targetBoard?.columns && !!targetBoard?.columns.length) &&
           targetBoard?.columns.map(col => <Column key={col.key} column={col}
                                                   boardKey={targetBoard.key}
-                                                  onRemove={handleColumnRemove}/>)}
+                                                  onRemove={handleColumnRemove}
+                                                  onCardAdd={handleCardAdding}/>)}
 
           {(!targetBoard?.columns || !targetBoard?.columns.length) &&
           <p>No Columns. Add new one</p>}
@@ -54,7 +68,11 @@ export default function Board() {
   )
 }
 
-function Column({column, boardKey, onRemove}) {
+function Column({column, boardKey, onRemove, onCardAdd}) {
+
+  const handleCardAdding = useCallback((title) => {
+    onCardAdd?.({title, board: boardKey, column: column.key})
+  }, [column, boardKey])
 
   return (
       <div className="Column">
@@ -64,8 +82,9 @@ function Column({column, boardKey, onRemove}) {
         </div>
 
         <div className="Cards">
-          {column.cards.map(c => <h4 key={c.key}>Card</h4>)}
+          {column.cards.map(c => <MiniCardView key={c.key} card={c}/>)}
         </div>
+        <NewCardForm onAdd={handleCardAdding}/>
       </div>
   )
 }
@@ -104,5 +123,46 @@ function NewColumnModal({open, onClose, onConfirm, boardKey}) {
           </div>
         </form>
       </Modal>
+  )
+}
+
+function MiniCardView({card}) {
+  return (
+      <div className="MiniCardView">
+        <div className="title">{card.title}</div>
+        <div className="members">{card.members.join(", ")}</div>
+      </div>
+  )
+}
+
+function NewCardForm({onAdd}) {
+  const [title, setTitle] = useState("")
+  const [isFormVisible, setFormVisibility] = useState(false)
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    onAdd?.(title)
+    setTitle("")
+    setFormVisibility(false)
+  }
+
+  const renderForm = () => (
+      <form onSubmit={handleSubmit}>
+        <Input placeholder={"Type and enter..."}
+               name={"title"} required autoFocus
+               value={title}
+               onChange={e => setTitle(e.target.value)}
+               className={"col-12"}/>
+      </form>
+  )
+
+  return (
+      <div className="NewCardForm">
+        {isFormVisible
+            ? renderForm()
+            : <Button content={"New Card"}
+                      className={"col-12"}
+                      onClick={() => setFormVisibility(true)}/>}
+      </div>
   )
 }

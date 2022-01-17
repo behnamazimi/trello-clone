@@ -77,3 +77,26 @@ button {
     padding: 1rem;
     margin-right: 1.5rem;
 }
+
+
+.MiniCardView {
+    background-color: rgba(255, 255, 255, 0.3);
+    color: #1c2631;
+    padding: .25rem;
+    border-radius: .25rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+}
+
+.MiniCardView:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+.MiniCardView .members {
+    font-size: 14px;
+    opacity: .7;
+}
+
+.MiniCardView .title {
+    margin-bottom: .25rem;
+}

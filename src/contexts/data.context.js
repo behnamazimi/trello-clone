@@ -12,6 +12,7 @@ export const dataActions = {
   removeBoard: "removeBoard",
   removeColumn: "removeColumn",
   addColumn: "addColumn",
+  addCard: "addCard",
 }
 
 const DataContext = React.createContext({})
@@ -134,6 +135,16 @@ function dataReducer(state, action) {
           return b
         })
       }
+      break;
+    }
+    case dataActions.addCard: {
+      const newItem = {
+        key: generateKeyByTitle(action.payload.title),
+        ...action.payload,
+        createdAt: now
+      }
+      console.log(action.payload);
+      state = {...state, cards: [...state.cards, newItem]}
       break;
     }
   }
