@@ -1,70 +1,136 @@
-# Getting Started with Create React App
+# Trello Clone
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+### Steps to serve the project locally
 
-In the project directory, you can run:
+- Clone the repository
+- Run command `npm start`
 
-### `npm start`
+### What I did before coding
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+* Thinking about the pages and the possible routes
+* Prepared an on-paper prototype for all pages
+* Create a dummy data structure
+* Thinking about the contexts and how to manage states
+* Find an easy-to-use CSS utils library
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+I had below notes as the result of the above steps:
 
-### `npm test`
+```
+Entities:
+- User
+    - Full Name
+    - Username
+    - Email
+- WorkSpace
+    - Title
+    - Description
+    - Key
+    - Username
+- Board
+    - Title
+    - Key
+    - Background
+    - WorkspaceKey
+    - Columns []
+- Column
+    - Title
+    - Key
+    - Order
+- Card
+    - Key
+    - Title
+    - Content
+    - BoardKey
+    - ColumnKey
+    - Checklist
+    - Members []
+    - Labels []
+- Label
+    - Key
+    - Title
+    - Color
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+Pages:
+- Login (/login)
+- User Profile and settings (/profile)
+    - User details (name, avatar, email, logout)
+- Workspaces (/)
+    - List All Workspaces
+    - Create new Workspace
+        - Name
+        - Description
+        - Key
+- Workspace Details (/w/:key)
+    - List of boards
+    - Create new board
+        - Title
+        - Workspace
+        - Background
+        - Key 
+    - 
+- Board Details (/b:key)
+    - Columns
+        - Title
+        - Key
+        - Position
+        - Add card to column
+            - New card simple form
+    - Add new Column
+    - Card Modal
+        - Title
+        - Description
+        - Members
+        - Checklist
+        - Labels
+        - Move/copy to another board
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Common Components:
+- Input
+- Button
+- Modal
+- Select
+- Header
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Steps:
+1. Create react app
+2. Create dummy data
+3. Create directory structure with my common way
+    src
+        components
+        constants
+        utils
+4. Import Basic Styles
+5. Create jsx file for each page
+6. Create router (without react-router)
+7. Create pages base components
+8. ...
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Resources and APIs:
+- https://watercss.kognise.dev/ Common Style
+- https://basscss.com  CSS Utils
 
-### `npm run eject`
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+As you would see I started from workspace entity. Each user could have various workspaces. Also, each workspace could
+include dozens of boards. It's possible to add multiple columns to each board and multiple cards to each column.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+During all 4-5 hours I focused on functionality more than performance.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+I tried to implement routing with a context.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+To simplify and save time, I've made all the data service stuff inside the data context.
 
-## Learn More
+No time left for checklist and label creation.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+**If this was a real product:**
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- I would focus equally on performance and functionality
+- In-code comment and prop types are required 
+- Data services should handle in a separate place
+- Some features like card activities, adding comments, reach text editor are needed to make the app more useful
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+:) 
