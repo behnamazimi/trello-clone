@@ -3,7 +3,25 @@ import Profile from "./components/pages/Profile";
 import Board from "./components/pages/Board";
 import Workspaces from "./components/pages/workspaces/Workspaces";
 import WorkspaceDetails from "./components/pages/workspaces/WorkspaceDetails";
-import RouterProvider from "./contexts/router.context";
+import RouterProvider, {Route} from "./contexts/router.context";
+
+const routes = [
+  {
+    title: "Login",
+    path: "/login",
+    Component: Login
+  },
+  {
+    title: "Profile",
+    path: "/profile",
+    Component: Profile
+  },
+  {
+    title: "Workspaces",
+    path: "/",
+    Component: Workspaces
+  },
+]
 
 function App() {
   return (
@@ -11,11 +29,7 @@ function App() {
         <div className="App">
           Trello Clone
 
-          <Login/>
-          <Profile/>
-          <Workspaces/>
-          <WorkspaceDetails/>
-          <Board/>
+          {routes.map(route => (<Route key={route.key} {...route}/>))}
         </div>
       </RouterProvider>
   );

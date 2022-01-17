@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useEffect, useMemo, useState} from "react";
+import React, {Component, useCallback, useContext, useEffect, useMemo, useState} from "react";
 
 const RouterContext = React.createContext({})
 
@@ -39,3 +39,10 @@ export default function RouterProvider({children}) {
   )
 }
 
+export function Route({path, Component, ...rest}) {
+  const router = useRouter()
+  if (router.currentPage !== path) {
+    return null
+  }
+  return <Component/>
+}
