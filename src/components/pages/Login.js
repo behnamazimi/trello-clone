@@ -1,9 +1,13 @@
-import {Link} from "../../contexts/router.context";
+import {Link, useRouter} from "../../contexts/router.context";
 import Input from "../common/Input";
 import {useState} from "react";
 import Button from "../common/Button";
+import {useAuth} from "../../contexts/auth.context";
 
 export default function Login() {
+
+  const auth = useAuth()
+  const {navigate} = useRouter()
 
   const [credentials, setCredentials] = useState({
     username: "",
@@ -17,6 +21,9 @@ export default function Login() {
   const handleSubmit = (e) => {
     e.preventDefault()
 
+    auth.checkAuth(credentials)
+        .then(() => navigate("/"))
+        .catch(() => alert("Invalid Credentials"))
   }
 
   return (

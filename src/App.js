@@ -2,16 +2,19 @@ import RouterProvider, {Route} from "./contexts/router.context";
 import routes from "./consts/routes";
 import Navbar from "./components/common/Navbar";
 import DataProvider from "./contexts/data.context";
+import AuthProvider from "./contexts/auth.context";
 
 function App() {
   return (
       <DataProvider>
         <RouterProvider>
-          <div className="App">
-            <Navbar/>
+          <AuthProvider>
+            <div className="App">
+              <Navbar/>
 
-            {routes.map(route => (<Route key={route.key} {...route}/>))}
-          </div>
+              {routes.map(route => (<Route key={route.key} {...route}/>))}
+            </div>
+          </AuthProvider>
         </RouterProvider>
       </DataProvider>
   );
