@@ -1,6 +1,9 @@
 import React, {useContext, useMemo, useReducer} from "react";
 import dummyData from "../consts/dummy-data";
 import generateKeyByTitle from "../utils/generateKeyByTitle";
+import isJsonString from "../utils/isJsonString";
+
+const localDataKey = "data"
 
 export const dataActions = {
   addWorkspace: "addWorkspace",
@@ -15,7 +18,7 @@ export function useData() {
 
 export default function DataProvider({children}) {
 
-  const [state, dispatch] = useReducer(dataReducer, dummyData)
+  const [state, dispatch] = useReducer(dataReducer, dummyData, dataLoader)
 
   const value = useMemo(() => ({
     state,
@@ -52,5 +55,16 @@ function dataReducer(state, action) {
       break;
     }
   }
+
+  localStorage.setItem(localDataKey, JSON.stringify(state))
   return state
+}
+
+function dataLoader(state) {
+  const localDataStr = localStorage.getItem(localDataKey)
+  if (!localDataStr || !isJsonString(localDataStr)) {
+    return state
+  }
+
+  return JSON.parse(localDataStr)
 }
