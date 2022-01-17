@@ -13,6 +13,8 @@ export const dataActions = {
   removeColumn: "removeColumn",
   addColumn: "addColumn",
   addCard: "addCard",
+  updateCard: "updateCard",
+  setActiveCard: "setActiveCard",
 }
 
 const DataContext = React.createContext({})
@@ -143,8 +145,27 @@ function dataReducer(state, action) {
         ...action.payload,
         createdAt: now
       }
-      console.log(action.payload);
       state = {...state, cards: [...state.cards, newItem]}
+      break;
+    }
+    case dataActions.updateCard: {
+      state = {
+        ...state,
+        cards: state.cards.map(card => {
+          if (card.key === action.payload.key) {
+            card = {...action.payload, updatedAt: now,}
+          }
+          return card
+        }),
+        activeCard: action.payload
+      }
+      break;
+    }
+    case dataActions.setActiveCard: {
+      state = {
+        ...state,
+        activeCard: state.cards.find(c => c.key === action.payload)
+      }
       break;
     }
   }

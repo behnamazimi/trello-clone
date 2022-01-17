@@ -23,7 +23,7 @@ const routes = [
   {
     title: "Board",
     path: "/b/:key",
-    component: "components/pages/Board",
+    component: "components/pages/board/Board",
   },
 ]
 

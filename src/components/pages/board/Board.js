@@ -1,19 +1,26 @@
-import {useRouter} from "../../contexts/router.context";
-import Button from "../common/Button";
-import {dataActions, useData} from "../../contexts/data.context";
+import {useRouter} from "../../../contexts/router.context";
+import Button from "../../common/Button";
+import {dataActions, useData} from "../../../contexts/data.context";
 import {useCallback, useMemo, useState} from "react";
-import {useAuth} from "../../contexts/auth.context";
-import Modal from "../common/Modal";
-import Input from "../common/Input";
+import {useAuth} from "../../../contexts/auth.context";
+import Modal from "../../common/Modal";
+import Input from "../../common/Input";
+import CardDetailsModal from "./CardDetailsModal";
 
 export default function Board() {
   const {user} = useAuth()
-  const {navigate, location} = useRouter()
+  const {location} = useRouter()
   const {state, dispatch, getBoardByKey} = useData()
   const [newColumnModal, setNewColumnModal] = useState()
 
   const targetBoard = useMemo(() => getBoardByKey(location.params?.key), [state, getBoardByKey, location.params])
 
+  const handleCardClick = useCallback((cardKey) => {
+    dispatch({
+      type: dataActions.setActiveCard,
+      payload: cardKey
+    })
+  }, [dispatch])
 
   const handleCardAdding = useCallback((payload) => {
     dispatch({
@@ -53,7 +60,8 @@ export default function Board() {
           targetBoard?.columns.map(col => <Column key={col.key} column={col}
                                                   boardKey={targetBoard.key}
                                                   onRemove={handleColumnRemove}
-                                                  onCardAdd={handleCardAdding}/>)}
+                                                  onCardAdd={handleCardAdding}
+                                                  onCardClick={handleCardClick}/>)}
 
           {(!targetBoard?.columns || !targetBoard?.columns.length) &&
           <p>No Columns. Add new one</p>}
@@ -64,11 +72,13 @@ export default function Board() {
                         onClose={() => setNewColumnModal(false)}
                         onConfirm={handleColumnAdd}
                         boardKey={targetBoard?.key}/>
+
+        <CardDetailsModal/>
       </div>
   )
 }
 
-function Column({column, boardKey, onRemove, onCardAdd}) {
+function Column({column, boardKey, onRemove, onCardAdd, onCardClick}) {
 
   const handleCardAdding = useCallback((title) => {
     onCardAdd?.({title, board: boardKey, column: column.key})
@@ -82,7 +92,8 @@ function Column({column, boardKey, onRemove, onCardAdd}) {
         </div>
 
         <div className="Cards">
-          {column.cards.map(c => <MiniCardView key={c.key} card={c}/>)}
+          {column.cards.map(c => <MiniCardView key={c.key} card={c}
+                                               onClick={onCardClick}/>)}
         </div>
         <NewCardForm onAdd={handleCardAdding}/>
       </div>
@@ -126,9 +137,9 @@ function NewColumnModal({open, onClose, onConfirm, boardKey}) {
   )
 }
 
-function MiniCardView({card}) {
+function MiniCardView({card, onClick}) {
   return (
-      <div className="MiniCardView">
+      <div className="MiniCardView" onClick={() => onClick(card.key)}>
         <div className="title">{card.title}</div>
         <div className="members">{card.members.join(", ")}</div>
       </div>
