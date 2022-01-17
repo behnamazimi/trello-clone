@@ -40,7 +40,7 @@ export default function CardDetailsModal() {
 
   const targetCard = state.activeCard
   if (!targetCard) return null
-  console.log(targetCard.updatedAt);
+
   return (
       <Modal open={true} className="CardDetailsModal p2"
              title={`Card: ${targetCard.key}`}

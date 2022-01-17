@@ -52,7 +52,10 @@ export default function Board() {
       <div className="Board p2">
         <div className={"flex justify-between items-center"}>
           <h2>{targetBoard?.title || "-"} Details</h2>
-          <Button onClick={() => setNewColumnModal(true)}>Add Column</Button>
+          <div>
+            <Button onClick={() => alert("I'm exhausted xD")} className={"mr1"}>Labels</Button>
+            <Button onClick={() => setNewColumnModal(true)}>Add Column</Button>
+          </div>
         </div>
 
         <div className="ColumnsWrapper">

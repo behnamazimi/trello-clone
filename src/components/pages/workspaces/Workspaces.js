@@ -24,7 +24,6 @@ export default function Workspaces() {
   }, [dispatch])
 
   const handleWorkspaceCreation = (payload) => {
-    console.log(payload);
     dispatch({
       type: dataActions.addWorkspace,
       payload,

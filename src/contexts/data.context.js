@@ -193,5 +193,7 @@ function dataLoader(state) {
     return state
   }
 
-  return JSON.parse(localDataStr)
+  let localData = JSON.parse(localDataStr)
+  localData.activeCard = null
+  return localData
 }
