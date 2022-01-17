@@ -62,6 +62,18 @@ export function Route({path, Component, ...rest}) {
   return <Component {...rest}/>
 }
 
+export function Link({children, to, href = null, ...rest}) {
+  const {navigate} = useRouter()
+
+  const handleLinkClick = useCallback((e) => {
+    e.preventDefault()
+    navigate(to)
+  }, [to, navigate])
+
+  return <a href={href || to} onClick={handleLinkClick} {...rest}>{children}</a>
+}
+
+
 function getCurrentPathname() {
   return window.location.pathname.toLowerCase()
 }
