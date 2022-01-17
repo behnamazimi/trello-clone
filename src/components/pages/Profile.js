@@ -8,7 +8,7 @@ export default function Profile(){
       <div>
         Profile
 
-        <button onClick={() => navigate("/login")}>To Login</button>
+        <button onClick={() => navigate("/b/board-one")}>To Board Details</button>
       </div>
   )
 }

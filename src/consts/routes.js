@@ -22,12 +22,12 @@ const routes = [
   },
   {
     title: "WorkspaceDetails",
-    path: "/",
+    path: "/w/:key",
     Component: WorkspaceDetails
   },
   {
     title: "Board",
-    path: "/",
+    path: "/b/:key",
     Component: Board
   },
 ]

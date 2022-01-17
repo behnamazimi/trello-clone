@@ -17,8 +17,8 @@ export default function RouterProvider({children}) {
 
   const assignCurrentPathname = useCallback(() => {
     let cp = getCurrentPathname()
-    // todo: get params
-    setLocation({pathname: cp, path: cp, params: null})
+    const [route, params] = getMatchedRouteWithParams(cp)
+    setLocation({pathname: cp, path: route.path, params: params})
   }, [])
 
   useEffect(() => {
@@ -29,14 +29,14 @@ export default function RouterProvider({children}) {
   }, [assignCurrentPathname])
 
   const navigate = useCallback((toPath) => {
-    setLocation({pathname: toPath, path: toPath})
-    const targetRoute = getMatchedRoute(toPath)
-    let title = "Trello Clone"
-    if(!!targetRoute){
-      title = targetRoute.title + " | " + title
-    }
+    const [route, params] = getMatchedRouteWithParams(toPath)
 
+    let title = "Trello Clone"
+    if (!!route) {
+      title = route.title + " | " + title
+    }
     document.title = title
+    setLocation({pathname: toPath, path: route.path, params})
 
     window.history.pushState(null, null, toPath)
   }, [setLocation])
@@ -55,21 +55,45 @@ export default function RouterProvider({children}) {
 
 export function Route({path, Component, ...rest}) {
   const {location} = useRouter()
-  if (location?.pathname !== path) {
+  const [isMatched] = checkMatchedAndGetParams(path, location.pathname)
+  if (!isMatched) {
     return null
   }
-  return <Component/>
+  return <Component {...rest}/>
 }
 
 function getCurrentPathname() {
   return window.location.pathname.toLowerCase()
 }
 
-function getMatchedRoute(pathname) {
+function getMatchedRouteWithParams(pathname) {
   for (let r of routes) {
-    if(r.path === pathname)
-      return r
+    const [isMatched, params] = checkMatchedAndGetParams(r.path, pathname)
+    if (isMatched)
+      return [r, params]
   }
 
-  return null
+  return [null, null]
+}
+
+function checkMatchedAndGetParams(pattern, pathname) {
+  // /test/:key/page
+  // /test/234/page
+
+  let patternSections = pattern.split("/")
+  let pathnameSections = pathname.split("/")
+
+  const paramRegEx = new RegExp(":[a-zA-Z0-9_-]+") // :param123
+
+  let isMatched = true
+  let params = patternSections.reduce((acc, pi, index) => {
+    if (paramRegEx.test(pi)) {
+      acc[pi.substr(1)] = pathnameSections[index]
+    } else if (pi !== pathnameSections[index]) {
+      isMatched = false
+    }
+    return acc
+  }, {})
+
+  return [isMatched, params]
 }
