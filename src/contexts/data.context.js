@@ -1,5 +1,6 @@
 import React, {useContext, useMemo, useReducer} from "react";
 import dummyData from "../consts/dummy-data";
+import generateKeyByTitle from "../utils/generateKeyByTitle";
 
 export const dataActions = {
   addWorkspace: "addWorkspace",
@@ -29,6 +30,7 @@ export default function DataProvider({children}) {
 }
 
 function dataReducer(state, action) {
+  const now = new Date().getTime();
 
   switch (action.type) {
     case dataActions.removeWorkspace:
@@ -36,7 +38,19 @@ function dataReducer(state, action) {
         ...state,
         workspaces: state.workspaces.filter(w => w.key !== action.payload)
       }
-      break
+      break;
+    case dataActions.addWorkspace: {
+      const newItem = {
+        key: generateKeyByTitle(action.payload.title),
+        ...action.payload,
+        createdAt: now
+      }
+      state = {
+        ...state,
+        workspaces: [...state.workspaces, newItem]
+      }
+      break;
+    }
   }
   return state
 }
