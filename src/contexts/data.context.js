@@ -58,11 +58,16 @@ export default function DataProvider({children}) {
     return targetBoard
   }, [state, getBoards, getCardsOfColumn])
 
+  const getLabelsByKeys = useCallback((labelsKey = []) => {
+    return state.labels.filter(c => labelsKey.includes(c.key))
+  }, [state])
+
   const value = useMemo(() => ({
     state,
     dispatch,
     getWorkspaceByKey,
     getBoardByKey,
+    getLabelsByKeys,
   }), [state, dispatch, getWorkspaceByKey])
 
   return (

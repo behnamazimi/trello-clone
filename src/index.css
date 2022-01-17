@@ -101,6 +101,7 @@ button {
     margin-bottom: .25rem;
 }
 
+.CardLabels .label,
 .CardMembers .member {
     background-color: rgba(255, 255, 255, 0.4);
     display: inline-block;
@@ -110,6 +111,7 @@ button {
     margin-right: .2rem;
 }
 
+.CardLabels .label button,
 .CardMembers .member button {
     all: initial;
     font-size: 16px;

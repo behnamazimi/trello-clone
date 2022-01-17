@@ -2,7 +2,8 @@ import Modal from "../../common/Modal";
 import Input from "../../common/Input";
 import {dataActions, useData} from "../../../contexts/data.context";
 import Button from "../../common/Button";
-import {useState} from "react";
+import {useMemo, useState} from "react";
+import Select from "../../common/Select";
 
 export default function CardDetailsModal() {
 
@@ -40,6 +41,11 @@ export default function CardDetailsModal() {
         <CardMembers card={targetCard}
                      onAdd={(newMember) => handleCardChange("members", [...targetCard.members, newMember])}
                      onRemove={(member) => handleCardChange("members", targetCard.members.filter(m => m !== member))}/>
+
+        <CardLabels card={targetCard}
+                    onAdd={(newLbl) => handleCardChange("labels", [...targetCard.labels, newLbl])}
+                    onRemove={(lbl) => handleCardChange("labels", targetCard.labels.filter(m => m !== lbl))}/>
+
       </Modal>
   )
 }
@@ -65,6 +71,38 @@ function CardMembers({card, onRemove, onAdd}) {
           <Input placeholder={"Type and enter to add member"}
                  required
                  value={newMember} onChange={e => setNewMember(e.target.value)}/>
+        </form>
+      </div>
+  )
+}
+
+function CardLabels({card, onRemove, onAdd}) {
+  const {state, getLabelsByKeys} = useData()
+  const [label, setLabel] = useState("")
+
+  const cardLabels = useMemo(() => getLabelsByKeys(card.labels), [card])
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    onAdd?.(label)
+    setLabel("")
+  }
+
+  return (
+      <div className="CardLabels border-bottom py1">
+        {cardLabels.map((label, key) =>
+            <div className="label mb1" key={key}>
+              {label.title}
+              <Button onClick={e => onRemove?.(label.key)} content={"x"}/>
+            </div>)}
+
+        <form onSubmit={handleSubmit}>
+          <Select label={"label"}
+                  required
+                  value={label}
+                  onChange={e => setLabel(e.target.value)}
+                  options={state.labels}/>
+          <Button content="Add"/>
         </form>
       </div>
   )
