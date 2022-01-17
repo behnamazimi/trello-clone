@@ -1,4 +1,5 @@
 import React, {Component, useCallback, useContext, useEffect, useMemo, useState} from "react";
+import routes from "../consts/routes";
 
 const RouterContext = React.createContext({})
 
@@ -29,7 +30,13 @@ export default function RouterProvider({children}) {
 
   const navigate = useCallback((toPath) => {
     setLocation({pathname: toPath, path: toPath})
-    // todo: find the route
+    const targetRoute = getMatchedRoute(toPath)
+    let title = "Trello Clone"
+    if(!!targetRoute){
+      title = targetRoute.title + " | " + title
+    }
+
+    document.title = title
 
     window.history.pushState(null, null, toPath)
   }, [setLocation])
@@ -56,4 +63,13 @@ export function Route({path, Component, ...rest}) {
 
 function getCurrentPathname() {
   return window.location.pathname.toLowerCase()
+}
+
+function getMatchedRoute(pathname) {
+  for (let r of routes) {
+    if(r.path === pathname)
+      return r
+  }
+
+  return null
 }
